@@ -7,23 +7,32 @@
 'use strict';
 
 angular.module('btford.phonegap.ready', []).
-  factory('phonegapReady', function ($rootScope) {
+factory('phonegapReady', function ($rootScope) {
+    'use strict';
+    var deviceready = false;
+    angular.element(document).bind('deviceready', function () {
+        deviceready = true;
+    });
     return function (fn) {
-      var queue = [];
+        var queue = [];
 
-      var impl = function () {
-        queue.push(Array.prototype.slice.call(arguments));
-      };
+        var impl = function () {
+            queue.push(Array.prototype.slice.call(arguments));
+        };
 
-      document.addEventListener('deviceready', function () {
-        queue.forEach(function (args) {
-          fn.apply(this, args);
-        });
-        impl = fn;
-      }, false);
-      
-      return function () {
-        return impl.apply(this, arguments);
-      };
+        if (!deviceready) {
+            angular.element(document).bind('deviceready', function () {
+                queue.forEach(function (args) {
+                    fn.apply(this, args);
+                });
+                impl = fn;
+            }, false);
+        } else {
+            impl = fn;
+        }
+
+        return function () {
+            return impl.apply(this, arguments);
+        };
     };
-  });
+});
