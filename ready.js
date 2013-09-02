@@ -6,32 +6,32 @@
 
 
 angular.module('btford.phonegap.ready', []).
-factory('phonegapReady', function ($rootScope) {
+  factory('phonegapReady', function ($rootScope) {
     'use strict';
     var deviceready = false;
     angular.element(document).bind('deviceready', function () {
-        deviceready = true;
+      deviceready = true;
     });
     return function (fn) {
-        var queue = [];
-
-        var impl = function () {
-            queue.push(Array.prototype.slice.call(arguments));
-        };
-
-        if (!deviceready) {
-            angular.element(document).bind('deviceready', function () {
-                queue.forEach(function (args) {
-                    fn.apply(this, args);
-                });
-                impl = fn;
-            });
-        } else {
-            impl = fn;
-        }
-
-        return function () {
-            return impl.apply(this, arguments);
-        };
+      var queue = [];
+  
+      var impl = function () {
+        queue.push(Array.prototype.slice.call(arguments));
+      };
+  
+      if (!deviceready) {
+        angular.element(document).bind('deviceready', function () {
+          queue.forEach(function (args) {
+            fn.apply(this, args);
+          });
+          impl = fn;
+        });
+      } else {
+        impl = fn;
+      }
+  
+      return function () {
+        return impl.apply(this, arguments);
+      };
     };
-});
+  });
