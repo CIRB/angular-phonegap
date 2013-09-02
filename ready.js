@@ -4,7 +4,6 @@
  * License: MIT
  */
 
-'use strict';
 
 angular.module('btford.phonegap.ready', []).
 factory('phonegapReady', function ($rootScope) {
@@ -26,7 +25,7 @@ factory('phonegapReady', function ($rootScope) {
                     fn.apply(this, args);
                 });
                 impl = fn;
-            }, false);
+            });
         } else {
             impl = fn;
         }
