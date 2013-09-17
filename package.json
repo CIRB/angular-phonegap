@@ -1,0 +1,24 @@
+{
+  "name": "angular-phonegap-ready",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "author": {
+    "name": "CIRB",
+    "url": "http://www.cirb.irisnet.be/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/CIRB/angular-phonegap-ready.git"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "",
+    "grunt-contrib-watch": "",
+    "grunt-release": "",
+    "grunt": ""
+  }
+}
