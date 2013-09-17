@@ -28,12 +28,12 @@ module.exports = function(grunt) {
             '<%= jshint.lint.src %>'
         ],
         tasks: ['default']
-      },
-      release: {
-        options: {
-          npm: false,
-          file: ['bower.json', 'package.json']
-        }
+      }
+    },
+    release: {
+      options: {
+        npm: false,
+        file: ['bower.json', 'package.json']
       }
     }
   });
