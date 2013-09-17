@@ -33,7 +33,7 @@ module.exports = function(grunt) {
     release: {
       options: {
         npm: false,
-        file: ['bower.json', 'package.json']
+        file: ['bower.json']
       }
     }
   });
