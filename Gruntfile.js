@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         }
       },
       lint: {
-        src: ['Gruntfile.js', '**/*.js']
+        src: ['Gruntfile.js', 'ready.js']
       }
     },
     watch: {
