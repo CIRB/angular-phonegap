@@ -1,6 +1,6 @@
 {
   "name": "angular-phonegap-ready",
-  "version": null,
+  "version": "0.1.1",
   "main": "ready.js",
   "dependencies": {
     "angular": ""
