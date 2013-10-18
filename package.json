@@ -1,5 +1,5 @@
 {
-  "name": "angular-phonegap-ready",
+  "name": "angular-phonegap",
   "version": "0.1.0",
   "engines": {
     "node": ">= 0.8.0"
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/CIRB/angular-phonegap-ready.git"
+    "url": "http://github.com/CIRB/angular-phonegap.git"
   },
   "scripts": {
     "test": "grunt"

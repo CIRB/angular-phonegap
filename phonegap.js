@@ -3,22 +3,20 @@
     var deferred_ready = null;
 
     angular.module('irisnet.phonegap', [])
+    .run(['$window', function ($window) {
+        this.$ready = $q.defer();
+        angular.element($window.document).bind('deviceready', function () {
+            var device = navigator.device || {};
+            device.desktop = typeof window.cordova === 'undefined';
+            device.ios = !device.desktop && device.platform === 'iOS';
+            device.android = !device.desktop && device.platform === 'Android';
+
+            this.$ready.resolve(device);
+        });
+    }])
     .factory('deviceready', ['$rootScope', '$q', function ($rootScope, $q) {
-
-        if (!deferred_ready) {
-            deferred_ready = $q.defer();
-            angular.element(document).bind('deviceready', function () {
-                var device = navigator.device || {};
-                device.desktop = typeof window.cordova === 'undefined';
-                device.ios = !device.desktop && device.platform === 'iOS';
-                device.android = !device.desktop && device.platform === 'Android';
-
-                deferred_ready.resolve(device);
-            });
-        }
-
         return function () {
-            return deferred_ready.promise;
+            return this.$ready.promise;
         };
     }]).factory('currentPosition', ['$q', 'deviceready','$rootScope',
             function ($q, deviceready, $rootScope) {
