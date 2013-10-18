@@ -1,5 +1,5 @@
 {
-  "name": "angular-phonegap-ready",
+  "name": "angular-phonegap",
   "version": "0.1.1",
   "main": "ready.js",
   "dependencies": {
