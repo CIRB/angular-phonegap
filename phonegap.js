@@ -1,34 +1,37 @@
 (function () {
     'use strict';
-    var deferred_ready = null;
+    var readyPromise;
 
     angular.module('irisnet.phonegap', [])
-    .run(['$window', function ($window) {
-        var self = this;
+    .run(['$q', '$window', function ($q, $window) {
 
-        this.$ready = $q.defer();
-        this.isReady = false;
+        var device,
+            deferred = $q.defer(),
+            isReady = false;
         angular.element($window.document).bind('deviceready', function () {
-            self.device = navigator.device || {};
-            self.device.desktop = false;
-            self.device.ios = !self.device.desktop && device.platform === 'iOS';
-            self.device.android = !self.device.desktop && device.platform === 'Android';
+            var device = navigator.device || {};
+            device.desktop = false;
+            device.ios = device.platform === 'iOS';
+            device.android = device.platform === 'Android';
 
-            this.isReady = true;
-            this.$ready.resolve(self.device);
+            isReady = true;
+            deferred.resolve(device);
         });
         setTimeout(function() {
-            if (!self.isReady && !navigator.device && !window.cordova) {
+            if (!isReady) {
+                device = {};
                 device.desktop = true;
                 device.ios = false;
                 device.android = false;
-                deferredReady.resolve($window.device);
+                deferred.resolve(device);
             }
         }, 5000);
-    }])
-    .factory('deviceready', ['$rootScope', '$q', function ($rootScope, $q) {
+
+        readyPromise = deferred.promise;
+    }]).factory('deviceready', [function () {
+
         return function () {
-            return this.$ready.promise;
+            return readyPromise;
         };
     }]).factory('currentPosition', ['$q', 'deviceready',
             function ($q, deviceready) {
@@ -59,7 +62,7 @@
                 lang ="fr";
             }
             return lang;
-        };
+        }
         return function () {
             var deferred = $q.defer();
             deviceready().then(function (device) {
