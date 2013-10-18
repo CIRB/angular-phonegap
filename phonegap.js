@@ -4,29 +4,36 @@
 
     angular.module('irisnet.phonegap', [])
     .run(['$window', function ($window) {
-        this.$ready = $q.defer();
-        angular.element($window.document).bind('deviceready', function () {
-            var device = navigator.device || {};
-            device.desktop = typeof window.cordova === 'undefined';
-            device.ios = !device.desktop && device.platform === 'iOS';
-            device.android = !device.desktop && device.platform === 'Android';
+        var self = this;
 
-            this.$ready.resolve(device);
+        this.$ready = $q.defer();
+        this.isReady = false;
+        angular.element($window.document).bind('deviceready', function () {
+            self.device = navigator.device || {};
+            self.device.desktop = false;
+            self.device.ios = !self.device.desktop && device.platform === 'iOS';
+            self.device.android = !self.device.desktop && device.platform === 'Android';
+
+            this.isReady = true;
+            this.$ready.resolve(self.device);
         });
+        setTimeout(function() {
+            if (!self.isReady && !navigator.device && !window.cordova) {
+                device.desktop = true;
+                device.ios = false;
+                device.android = false;
+                deferredReady.resolve($window.device);
+            }
+        }, 5000);
     }])
     .factory('deviceready', ['$rootScope', '$q', function ($rootScope, $q) {
         return function () {
             return this.$ready.promise;
         };
-    }]).factory('currentPosition', ['$q', 'deviceready','$rootScope',
-            function ($q, deviceready, $rootScope) {
+    }]).factory('currentPosition', ['$q', 'deviceready',
+            function ($q, deviceready) {
 
-        var errorMessages = {
-            1: 'Your GPS is probably deactivated or unavailable',
-            2: 'Unable to get geo location',
-            3: 'Timeout to get geo location'
-        };
-        return function () {
+        return function (options) {
             var deferred = $q.defer();
 
             deviceready().then(function () {
@@ -34,21 +41,20 @@
                     deferred.resolve(position);
 
                 }, function (error) {
-                    var reason = errorMessages[error.code];
-                    deferred.reject(reason);
-                }, {
-                    timeout:10000,
+                    deferred.reject(error);
+                }, options || {
+                    timeout: 10000,
                     maximumAge: 600000
                 });
 
             });
             return deferred.promise;
         };
-    }]).factory('localeName', ['$q', 'phonegapReady', 'device', '$rootScope',
-            function ($q, phonegapReady, device, $rootScope) {
+    }]).factory('localeName', ['$q', 'deviceready',
+            function ($q, deviceready) {
 
-        var resolveLang = function (lang) {
-            lang = lang.split(/[_-]+/)[0];
+        function resolveLang (lang) {
+            lang = lang.split(/[_-]+/)[0].toLowerCase();
             if(lang !== 'nl' && lang !== 'fr'){
                 lang ="fr";
             }
@@ -58,14 +64,14 @@
             var deferred = $q.defer();
             deviceready().then(function (device) {
 
-                if (Constant.isDesktop()) {
+                if (device.desktop) {
                     deferred.resolve(resolveLang(navigator.language));
                 } else {
                     navigator.globalization.getLocaleName(
-                        function (language) {
-                            deferred.resolve(resolveLang(language.value));
-                        }, function () {
-                            deferred.reject('Error getting language');
+                        function (locale) {
+                            deferred.resolve(resolveLang(locale.value));
+                        }, function (error) {
+                            deferred.reject(error);
                         }
                     );
                 }
