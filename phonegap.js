@@ -8,17 +8,20 @@
         var device,
             deferred = $q.defer(),
             isReady = false;
-        angular.element($window.document).bind('deviceready', function () {
-            var device = navigator.device || {};
+
+        document.addEventListener("deviceready", function () {
+            isReady = true;
+            var device = window.device || {};
             device.desktop = false;
             device.ios = device.platform === 'iOS';
             device.android = device.platform === 'Android';
 
-            isReady = true;
             deferred.resolve(device);
-        });
+        }, false);
+
         setTimeout(function() {
             if (!isReady) {
+                isReady = true;
                 device = {};
                 device.desktop = true;
                 device.ios = false;
