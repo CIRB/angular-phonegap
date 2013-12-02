@@ -64,7 +64,7 @@
             deviceready().then(function (device) {
 
                 if (device.desktop) {
-                    deferred.resolve(resolveLanguage(navigator.language));
+                    deferred.resolve(resolveLanguage(navigator.language, allowedLanguage));
                 } else {
                     navigator.globalization.getLocaleName(
                         function (locale) {
