@@ -19,7 +19,13 @@ module.exports = function(grunt) {
         }
       },
       lint: {
-        src: ['Gruntfile.js', 'ready.js']
+        src: ['*.js', 'test/**/*.js']
+      }
+    },
+    karma: {
+      all: {
+        configFile: "karma.conf.js",
+        autowatch: false
       }
     },
     watch: {
@@ -41,8 +47,9 @@ module.exports = function(grunt) {
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-release');
 
   // Default task.
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('default', ['jshint', 'karma']);
 };

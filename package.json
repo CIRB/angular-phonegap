@@ -13,12 +13,21 @@
     "url": "http://github.com/CIRB/angular-phonegap.git"
   },
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "blanket": {
+      "pattern": [
+        "phonegap.js"
+      ]
+    }
   },
   "devDependencies": {
+    "grunt": "",
     "grunt-contrib-jshint": "",
     "grunt-contrib-watch": "",
     "grunt-release": "",
-    "grunt": ""
+    "grunt-karma": "~0.6.2",
+    "karma-coverage": "~0.1.0",
+    "karma-junit-reporter": "~0.2.1",
+    "karma-html-reporter": "~0.1.1"
   }
 }

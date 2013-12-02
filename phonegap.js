@@ -59,23 +59,16 @@
     }]).factory('localeName', ['$q', 'deviceready',
             function ($q, deviceready) {
 
-        function resolveLang (lang) {
-            lang = lang.split(/[_-]+/)[0].toLowerCase();
-            if(lang !== 'nl' && lang !== 'fr'){
-                lang ="fr";
-            }
-            return lang;
-        }
-        return function () {
+        return function (allowedLanguage) {
             var deferred = $q.defer();
             deviceready().then(function (device) {
 
                 if (device.desktop) {
-                    deferred.resolve(resolveLang(navigator.language));
+                    deferred.resolve(resolveLanguage(navigator.language));
                 } else {
                     navigator.globalization.getLocaleName(
                         function (locale) {
-                            deferred.resolve(resolveLang(locale.value));
+                            deferred.resolve(resolveLanguage(locale.value, allowedLanguage));
                         }, function (error) {
                             deferred.reject(error);
                         }
@@ -85,4 +78,13 @@
             return deferred.promise;
         };
     }]);
+
+    function resolveLanguage (lang, allowedLanguage) {
+        lang = lang.split(/[_-]+/)[0].toLowerCase();
+
+        if (!allowedLanguage || allowedLanguage.indexOf(lang) >= 0) {
+            return lang;
+        }
+        return null;
+    }
 })();
