@@ -1,6 +1,6 @@
 {
   "name": "angular-phonegap",
-  "version": null,
+  "version": "0.4.1",
   "main": "phonegap.js",
   "dependencies": {},
   "devDependencies": {
