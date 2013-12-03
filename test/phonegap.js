@@ -37,6 +37,26 @@ describe('Phonegap Mobule for Angular', function () {
         }, "event fired", 1000);
     });
 
+    it('should deviceready after event fired', function () {
+        var processed = false;
+        runs(function() {
+            deviceready().then(function (device) {
+                expect(device).toBeDefined();
+            });
+            fireDeviceReady();
+
+            deviceready().then(function (device) {
+                expect(device).toBeDefined();
+                processed = true;
+            });
+            $rootScope.$apply();
+        });
+
+        waitsFor(function() {
+            return processed;
+        }, "event fired", 1000);
+    });
+
     it('should deviceready fallback after timeout', function () {
         var processed = false;
         runs(function() {
@@ -46,7 +66,7 @@ describe('Phonegap Mobule for Angular', function () {
             });
             setTimeout(function() {
                 $rootScope.$apply();
-            }, 5100);
+            }, 5200);
         });
 
         waitsFor(function() {

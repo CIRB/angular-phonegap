@@ -1,27 +1,32 @@
 (function () {
     'use strict';
-    var readyPromise;
+    var readyPromise,
+        device,
+        deferred,
+        timeoutID;
 
-    angular.module('irisnet.phonegap', [])
-    .run(['$q', '$window', function ($q, $window) {
-
-        var device,
-            deferred = $q.defer(),
-            isReady = false;
-
-        document.addEventListener("deviceready", function () {
-            isReady = true;
-            var device = window.device || {};
+    function devicereadyCallback() {
+        if (!device) {
+            device = window.device || {};
             device.desktop = false;
             device.ios = device.platform === 'iOS';
             device.android = device.platform === 'Android';
 
             deferred.resolve(device);
-        }, false);
+            clearTimeout(timeoutID);
+        }
+    }
 
-        setTimeout(function() {
-            if (!isReady) {
-                isReady = true;
+    angular.module('irisnet.phonegap', [])
+    .run(['$q', '$window', function ($q, $window) {
+        device = null;
+        deferred = $q.defer();
+
+        document.removeEventListener("deviceready", devicereadyCallback, false); // if already binded
+        document.addEventListener("deviceready", devicereadyCallback, false);
+
+        timeoutID = setTimeout(function() {
+            if (!device) {
                 device = {};
                 device.desktop = true;
                 device.ios = false;
@@ -31,10 +36,17 @@
         }, 5000);
 
         readyPromise = deferred.promise;
-    }]).factory('deviceready', [function () {
+
+    }]).factory('deviceready', ["$q", function ($q) {
 
         return function () {
-            return readyPromise;
+            if (device) {
+                var deferred = $q.defer();
+                deferred.resolve(device);
+                return deferred.promise;
+            } else {
+                return readyPromise;
+            }
         };
     }]).factory('currentPosition', ['$q', 'deviceready',
             function ($q, deviceready) {
